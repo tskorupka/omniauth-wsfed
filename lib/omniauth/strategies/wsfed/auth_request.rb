@@ -19,7 +19,7 @@ module OmniAuth
         end
 
         def redirect_url
-          logger.error '[ADFS - Custom - STSG Company]'
+          puts '[ADFS - Custom - STSG Company]'
           if args[:whr].nil? && strategy_settings[:home_realm_discovery_path]
             strategy_settings[:home_realm_discovery_path]
           else
