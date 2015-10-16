@@ -32,7 +32,7 @@ module OmniAuth
           wtrealm = url_encode(strategy_settings[:realm])
           wreply  = url_encode(strategy_settings[:reply])
           # little change
-          wct     = url_encode(Time.now.utc.to_s.gsub(/\s+/,''))
+          wct     = url_encode(Time.now.strftime('%Y-%m-%d\'T\'%TZ'))
           whr     = url_encode(args[:whr])
 
           query_string = "?wa=#{wa}&wtrealm=#{wtrealm}&wreply=#{wreply}&wctx=#{}&wct=#{wct}"
