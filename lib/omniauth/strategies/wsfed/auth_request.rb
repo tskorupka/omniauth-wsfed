@@ -27,23 +27,22 @@ module OmniAuth
         end
 
         def wsfed_signin_request
-          puts '[ADFS - Custom - STSG Company][INFO] - Begin wsfed_signin_request'
           wa      = SIGNIN_PARAM
-          wtrealm = url_encode(strategy_settings[:realm])
-          wreply  = url_encode(strategy_settings[:reply])
-          # little change
+          wtrealm = url_encode(strategy_settings[:realm]).downcase
+          wreply  = url_encode(strategy_settings[:reply]).downcase
           time    = Time.now.strftime('%Y-%m-%dT%TZ')
-          puts "[ADFS - Custom - STSG Company][INFO] - Time is #{time}"
-          wct     = url_encode(time)
-          puts "[ADFS - Custom - STSG Company][INFO] - After url_encode is #{wct}"
-          whr     = url_encode(args[:whr])
+          wct     = url_encode(time).downcase.gsub('z', 'Z').gsub('t', 'T')
+          whr     = url_encode(args[:whr]).downcase
 
-          query_string = "?wa=#{wa}&wtrealm=#{wtrealm}&wreply=#{wreply}&wctx=#{}&wct=#{wct}"
+          query_string = "?wa=#{wa}&wtrealm=#{wtrealm}&wct=#{wct}&wreply=#{wreply}&wctx=#{}"
 
           unless whr.nil? or whr.empty?
             query_string = "#{query_string}&whr=#{whr}"
           end
 
+          puts '[ADFS - Custom - STSG Company][INFO] - Begin wsfed_signin_request'
+          puts "[ADFS - Custom - STSG Company][INFO] - Time is #{time}"
+          puts "[ADFS - Custom - STSG Company][INFO] - After url_encode is #{wct}"
           puts "[ADFS - Custom - STSG Company][INFO] - End wsfed_signin_request #{strategy_settings[:issuer] + query_string}"
 
           strategy_settings[:issuer] + query_string
