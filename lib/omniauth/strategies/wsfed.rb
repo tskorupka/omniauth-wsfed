@@ -65,7 +65,7 @@ module OmniAuth
 
       def override_options(options)
         puts 'Starting override_options'
-        wsfedip = get_ip_in_range(@request.env['REMOTE_ADDR'])
+        wsfedip = get_ip_in_range(@request.env['HTTP_X_REAL_IP'].present? ? @request.env['HTTP_X_REAL_IP'] : @request.env['REMOTE_ADDR'])
         if wsfedip.present?
           puts "WsfedIp found with id [#{wsfedip.id}]"
           wsfed = wsfedip.wsfed
