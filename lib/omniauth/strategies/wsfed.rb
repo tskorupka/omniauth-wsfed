@@ -19,6 +19,7 @@ module OmniAuth
 
       # Issues passive WS-Federation redirect for authentication...
       def request_phase
+        settings = override_options(options.dup)
         settings = options.dup
         settings[:reply] ||= callback_url
         auth_request = OmniAuth::Strategies::WSFed::AuthRequest.new(settings, :whr => @request.params['whr'])
@@ -27,6 +28,7 @@ module OmniAuth
 
       # Parse SAML token...
       def callback_phase
+        options = override_options(options.dup)
         begin
           validate_callback_params(@request)
 
@@ -62,6 +64,28 @@ module OmniAuth
 
     private
 
+      def override_options(options)
+        puts 'Starting override_options'
+        wsfedip = get_ip_in_range(@request.env['REMOTE_ADDR'])
+        if wsfedip.present?
+          puts "WsfedIp found with id [#{wsfedip.id}]"
+          wsfed = wsfedip.wsfed
+          if wsfed.present?
+            puts "Wsfed found with id [#{wsfed.id}] and relation of WsfedIp with id [#{wsfedip.id}]"
+            options[:issuer_name]          = wsfed.issuer_name
+            options[:issuer]               = wsfed.issuer
+            options[:realm]                = wsfed.realm
+            options[:reply]                = wsfed.reply
+            options[:saml_version]         = wsfed.saml_version
+            options[:id_claim]             = wsfed.id_claim
+            options[:idp_cert_fingerprint] = wsfed.idp_cert_fingerprint
+            puts "Options are #{options}"
+          end
+        end
+        options
+      end
+
+
       def get_fingerprint
         if options[:idp_cert_fingerprint]
           options[:idp_cert_fingerprint]
@@ -75,6 +99,17 @@ module OmniAuth
         if request.params['wresult'].nil? || request.params['wresult'].empty?
           raise OmniAuth::Strategies::WSFed::ValidationError.new('AuthN token (wresult) missing in callback.')
         end
+      end
+
+      def get_ip_in_range(request_ip)
+        wsfedips = WsfedIp.all
+        wsfedips.each do |wsfedip|
+          ip_addr = IPAddr.new(wsfedip.ip)
+          if ip_addr === request_ip or ip_addr.include?(request_ip)
+            return wsfedip
+          end
+        end
+        nil
       end
 
     end
