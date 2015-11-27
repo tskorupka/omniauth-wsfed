@@ -27,7 +27,8 @@ module OmniAuth
 
       # Parse SAML token...
       def callback_phase
-        options = override_options(options)
+        new_options = options
+        options = override_options(new_options)
         begin
           validate_callback_params(@request)
 
