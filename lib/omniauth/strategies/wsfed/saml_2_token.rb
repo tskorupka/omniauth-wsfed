@@ -15,6 +15,7 @@ module OmniAuth
         end
 
         def issuer
+          puts "REXML::XPath.first(document, '//Assertion/Issuer') =  #{REXML::XPath.first(document, '//Assertion/Issuer')}"
           REXML::XPath.first(document, '//Assertion/Issuer').text
         end
 

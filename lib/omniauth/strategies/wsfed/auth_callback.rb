@@ -47,6 +47,7 @@ module OmniAuth
         # Token Values
 
         def issuer
+          puts "token.issuer = #{token.issuer}"
           @issuer ||= token.issuer
         end
 
