@@ -105,7 +105,7 @@ module OmniAuth
         wsfedips = WsfedIp.all
         wsfedips.each do |wsfedip|
           ip_addr = IPAddr.new(wsfedip.ip)
-          if ip_addr === request_ip or ip_addr.include?(request_ip)
+          if ip_addr === IPAddr.new(request_ip)
             return wsfedip
           end
         end
