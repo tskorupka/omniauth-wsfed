@@ -19,6 +19,8 @@ module OmniAuth
 
       # Issues passive WS-Federation redirect for authentication...
       def request_phase
+        puts "Request"
+        @request.params.each { |index, value| puts "param#{index} = #{value}" }
         settings = override_options(options.dup)
         settings[:reply] ||= callback_url
         auth_request = OmniAuth::Strategies::WSFed::AuthRequest.new(settings, :whr => @request.params['whr'])
@@ -27,6 +29,8 @@ module OmniAuth
 
       # Parse SAML token...
       def callback_phase
+        puts "Request"
+        @request.params.each { |index, value| puts "param#{index} = #{value}" }
         new_options = options
         options = override_options(new_options)
         begin
